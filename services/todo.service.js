@@ -29,6 +29,13 @@ function query(filterBy = {}) {
                 todos = todos.filter(todo => todo.importance >= filterBy.importance)
             }
 
+            if (filterBy.isDone === 'true') {
+                todos = todos.filter(todo => todo.isDone === true)
+            }
+            if (filterBy.isDone === 'false') {
+                todos = todos.filter(todo => todo.isDone === false)
+            }
+
             return todos
         })
 }
@@ -102,6 +109,7 @@ function _createTodo(txt, importance) {
     const todo = getEmptyTodo(txt, importance)
     todo._id = utilService.makeId()
     todo.createdAt = todo.updatedAt = Date.now() - utilService.getRandomIntInclusive(0, 1000 * 60 * 60 * 24)
+    todo.color = 'black'
     return todo
 }
 

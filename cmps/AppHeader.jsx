@@ -9,6 +9,7 @@ import { showErrorMsg } from '../services/event-bus.service.js'
 import { logout } from '../store/user.action.js'
 
 
+
 export function AppHeader() {
     const navigate = useNavigate()
 
@@ -22,6 +23,7 @@ export function AppHeader() {
         <header className="app-header full main-layout">
             <section className="header-container">
                 <h1>React Todo App</h1>
+
                 {user ? (
                     < section >
 

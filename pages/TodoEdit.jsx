@@ -55,7 +55,7 @@ export function TodoEdit() {
             })
     }
 
-    const { txt, importance, isDone } = todoToEdit
+    const { txt, importance, isDone, color } = todoToEdit
 
     return (
         <section className="todo-edit">
@@ -68,6 +68,9 @@ export function TodoEdit() {
 
                 <label htmlFor="isDone">isDone:</label>
                 <input onChange={handleChange} value={isDone} type="checkbox" name="isDone" id="isDone" />
+
+                <label htmlFor="color">isDone:</label>
+                <input onChange={handleChange} value={color} type="color" name="color" id="color" />
 
 
                 <button>Save</button>
