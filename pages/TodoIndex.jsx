@@ -4,7 +4,8 @@ import { DataTable } from "../cmps/data-table/DataTable.jsx"
 import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 import { loadTodos, remove, save } from "../store/todo.action.js"
-
+import { SET_FILTER_BY, SET_USER_SCORE } from "../store/store.js"
+import { updateBalance } from '../store/user.action.js'
 
 const { useState, useEffect } = React
 const { Link, useSearchParams } = ReactRouterDOM
@@ -13,6 +14,7 @@ export function TodoIndex() {
 
     const dispatch = useDispatch()
     const todos = useSelector(state => state.todos)
+    const user = useSelector(state => state.user)
     // const [todos, setTodos] = useState(null)
 
     // Special hook for accessing search-params:
@@ -20,7 +22,12 @@ export function TodoIndex() {
 
     const defaultFilter = todoService.getFilterFromSearchParams(searchParams)
 
-    const [filterBy, setFilterBy] = useState(defaultFilter)
+    // const [filterBy, setFilterBy] = useState(defaultFilter)
+    const filterBy = useSelector(state => state.filterBy)
+
+    useEffect(() => {
+        dispatch({ type: SET_FILTER_BY, filterBy: defaultFilter })
+    }, [])
 
     useEffect(() => {
         setSearchParams(filterBy)
@@ -43,6 +50,10 @@ export function TodoIndex() {
     }
 
     function onToggleTodo(todo) {
+        if (user && !todo.isDone) {
+            // dispatch({ type: SET_USER_SCORE })
+            updateBalance()
+        }
         const todoToSave = { ...todo, isDone: !todo.isDone }
         save(todoToSave)
             .then((savedTodo) => {
@@ -50,13 +61,18 @@ export function TodoIndex() {
             })
             .catch(err => {
                 console.log('err:', err)
-                showErrorMsg('Cannot toggle todo ' + todoId)
+                showErrorMsg('Cannot toggle todo ' + todo._id)
             })
     }
+    function setFilterBy(filterBy) {
+        dispatch({ type: SET_FILTER_BY, filterBy })
+    }
+
+    const bgc = user ? { backgroundColor: user.prefs.bgColor } : {}
 
     if (!todos) return <div>Loading...</div>
     return (
-        <section className="todo-index">
+        <section className="todo-index" style={bgc}>
             <TodoFilter filterBy={filterBy} onSetFilterBy={setFilterBy} />
             <div>
                 <Link to="/todo/edit" className="btn" >Add Todo</Link>

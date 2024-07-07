@@ -14,10 +14,14 @@ export function AppHeader() {
     const navigate = useNavigate()
 
     const user = useSelector(state => state.user)
+    const todos = useSelector(state => state.todos)
+    const doneTodos = todos.filter(todo => todo.isDone)
 
     function onLogout() {
         logout()
     }
+
+
 
     return (
         <header className="app-header full main-layout">
@@ -25,10 +29,11 @@ export function AppHeader() {
                 <h1>React Todo App</h1>
 
                 {user ? (
-                    < section >
+                    < section style={user.prefs.color && { color: user.prefs.color }}>
 
-                        <Link to={`/user/${user._id}`}>Hello {user.fullname}</Link>
+                        <Link to={`/user/${user._id}`}>Hello {user.fullname} balance:{user.balance}</Link>
                         <button onClick={onLogout}>Logout</button>
+                        <progress max={todos.length} value={doneTodos.length} />
                     </ section >
                 ) : (
                     <section>
