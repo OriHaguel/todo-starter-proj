@@ -17,6 +17,7 @@ export const REMOVE_TODO = 'REMOVE_TODO'
 export const ADD_TODO = 'ADD_TODO'
 export const UPDATE_TODO = 'UPDATE_TODO'
 export const SET_USER_SCORE = 'SET_USER_SCORE'
+export const SET_USER_ACTIVITIES = 'SET_USER_ACTIVITIES'
 export const SET_FILTER_BY = 'SET_FILTER_BY'
 
 function appReducer(state = initialState, action = {}) {
@@ -32,14 +33,12 @@ function appReducer(state = initialState, action = {}) {
             var todos = state.todos.map(todo => todo._id === action.todo._id ? action.todo : todo)
             return { ...state, todos }
 
-
         case SET_LOADING:
             return { ...state, isLoading: !isLoading }
 
         case SET_USER:
             return { ...state, user: action.user }
         case SET_USER_SCORE:
-            // console.log('state.user,', state.user.balance)
             const user = { ...state.user, balance: state.user.balance + 10 }
             return { ...state, user }
 

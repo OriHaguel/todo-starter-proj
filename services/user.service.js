@@ -38,6 +38,7 @@ function signup({ username, password, fullname }) {
     user.createdAt = user.updatedAt = Date.now()
     user.balance = utilService.getRandomIntInclusive(1000, 10000)
     user.prefs = { color: 'black', bgColor: 'white' }
+    user.activities = []
     return storageService.post(STORAGE_KEY, user)
         .then(_setLoggedinUser)
 }
@@ -79,7 +80,7 @@ function getLoggedinUser() {
 }
 
 function _setLoggedinUser(user) {
-    const userToSave = { _id: user._id, fullname: user.fullname, balance: user.balance, prefs: { color: user.prefs.color, bgColor: user.prefs.bgColor }, }
+    const userToSave = { _id: user._id, fullname: user.fullname, balance: user.balance, prefs: { color: user.prefs.color, bgColor: user.prefs.bgColor }, activities: user.activities }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN, JSON.stringify(userToSave))
     return userToSave
 }

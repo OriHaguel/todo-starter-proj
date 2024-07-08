@@ -5,7 +5,7 @@ import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 import { loadTodos, remove, save } from "../store/todo.action.js"
 import { SET_FILTER_BY, SET_USER_SCORE } from "../store/store.js"
-import { updateBalance } from '../store/user.action.js'
+import { getUserActivities, updateBalance, updateUserActivities } from '../store/user.action.js'
 
 const { useState, useEffect } = React
 const { Link, useSearchParams } = ReactRouterDOM
@@ -15,6 +15,10 @@ export function TodoIndex() {
     const dispatch = useDispatch()
     const todos = useSelector(state => state.todos)
     const user = useSelector(state => state.user)
+    const doneTodos = todos.filter(todo => todo.isDone)
+
+    // console.log("🚀 ~ TodoIndex ~ user:", { ...user, activities: { ...user.activities, ...{ txt: 'yo', yo: 'yo' } } })
+
     // const [todos, setTodos] = useState(null)
 
     // Special hook for accessing search-params:
@@ -38,9 +42,23 @@ export function TodoIndex() {
             })
     }, [filterBy])
 
+    function userActivities(todoId, action) {
+        return todoService.get(todoId).then(gotUser => {
+            // console.log("🚀 ~ userActivities ~ todo:", gotUser.txt)
+            return { ...user, activities: [...user.activities, getUserActivities(gotUser.txt, action)] }
+        }
+        )
+    }
+
     function onRemoveTodo(todoId) {
+        userActivities(todoId, "Removed a Todo:").then(updatedUser => {
+            // console.log("🚀 ~ userActivities ~ user:", updatedUser)
+
+            updateUserActivities(updatedUser)
+        })
         remove(todoId)
-            .then(() => {
+            .then((user) => {
+
                 showSuccessMsg(`Todo removed`)
             })
             .catch(err => {
@@ -79,6 +97,7 @@ export function TodoIndex() {
             </div>
             <h2>Todos List</h2>
             <TodoList todos={todos} onRemoveTodo={onRemoveTodo} onToggleTodo={onToggleTodo} />
+            <progress max={todos.length} value={doneTodos.length} />
             <hr />
             <h2>Todos Table</h2>
             <div style={{ width: '60%', margin: 'auto' }}>

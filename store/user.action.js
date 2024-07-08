@@ -22,3 +22,13 @@ export function updateBalance() {
         .then(() => store.dispatch({ type: SET_USER_SCORE }))
 }
 
+export function updateUserActivities(user) {
+    userService.saveUser(user)
+        .then((user) => store.dispatch({ type: SET_USER, user }))
+}
+export function getUserActivities(txt, action) {
+    return { txt: txt, at: Date.now(), action }
+}
+
+
+

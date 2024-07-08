@@ -1,16 +1,18 @@
 import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 import { save } from "../store/todo.action.js"
+import { getUserActivities, updateBalance, updateUserActivities } from '../store/user.action.js'
 
 const { useState, useEffect } = React
 const { useNavigate, useParams } = ReactRouterDOM
-
+const { useSelector, useDispatch } = ReactRedux
 export function TodoEdit() {
 
     const [todoToEdit, setTodoToEdit] = useState(todoService.getEmptyTodo())
     const navigate = useNavigate()
     const params = useParams()
-
+    const user = useSelector(state => state.user)
+    console.log("🚀 ~ TodoEdit ~ user:", user)
     useEffect(() => {
         if (params.todoId) loadTodo()
     }, [])
@@ -42,10 +44,24 @@ export function TodoEdit() {
         setTodoToEdit(prevTodoToEdit => ({ ...prevTodoToEdit, [field]: value }))
     }
 
+    function userActivities(todoId, action) {
+        return todoService.get(todoId).then(gotUser => {
+            // console.log("🚀 ~ userActivities ~ todo:", gotUser.txt)
+            return { ...user, activities: [...user.activities, getUserActivities(gotUser.txt, action)] }
+        }
+        )
+    }
+
     function onSaveTodo(ev) {
         ev.preventDefault()
         save(todoToEdit)
             .then((savedTodo) => {
+                userActivities(savedTodo.todo._id, 'Added a Todo:').then(updatedUser => {
+                    // console.log("🚀 ~ userActivities ~ user:", updatedUser)
+
+                    updateUserActivities(updatedUser)
+                })
+                console.log("🚀 ~ .then ~ savedTodo:", savedTodo)
                 navigate('/todo')
                 showSuccessMsg(`Todo Saved (id: ${savedTodo._id})`)
             })
@@ -70,7 +86,7 @@ export function TodoEdit() {
                 <input onChange={handleChange} value={isDone} type="checkbox" name="isDone" id="isDone" />
 
                 <label htmlFor="color">isDone:</label>
-                <input onChange={handleChange} value={color} type="color" name="color" id="color" />
+                <input onChange={handleChange} type="color" name="color" id="color" />
 
 
                 <button>Save</button>

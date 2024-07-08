@@ -10,6 +10,7 @@ const { useNavigate, useParams } = ReactRouterDOM
 export function UserDetails() {
 
     const [user, setUser] = useState(userService.getLoggedinUser())
+    console.log("🚀 ~ UserDetails ~ user:", user)
     const navigate = useNavigate()
 
 
@@ -54,24 +55,44 @@ export function UserDetails() {
         // })
     }
 
+    function convertTimestamp(timestamp) {
+        // Convert the timestamp to a JavaScript Date object
+        const date = new Date(parseInt(timestamp));
 
+        // Format the date and time
+        const formattedDate = date.toLocaleDateString();
+        const formattedTime = date.toLocaleTimeString();
+
+        // Return the formatted date and time
+        return `${formattedDate} ${formattedTime}`;
+    }
 
     return (
-        <section className="todo-edit">
-            <form onSubmit={onUserTodo} >
-                <label htmlFor="fullname">Text:</label>
-                <input onChange={handleChange} value={user.fullname} type="text" name="fullname" id="fullname" />
+
+        <section>
+            <section>
+                <ul>
+
+                    {user.activities.map(activitie =>
+                        <li key={activitie.txt}>{convertTimestamp(activitie.at)}{activitie.action} '{activitie.txt}'</li>
+                    )}
+                </ul>
+            </section>
+            <section className="todo-edit">
+                <form onSubmit={onUserTodo} >
+                    <label htmlFor="fullname">Text:</label>
+                    <input onChange={handleChange} value={user.fullname} type="text" name="fullname" id="fullname" />
+
+                    <label htmlFor="color">change color:</label>
+                    <input onChange={handleColorChange} type="color" name="color" id="color" />
+
+                    <label htmlFor="bgColor">change background color:</label>
+                    <input onChange={handleColorChange} type="color" name="bgColor" id="bgColor" />
 
 
-                <label htmlFor="color">change color:</label>
-                <input onChange={handleColorChange} type="color" name="color" id="color" />
-
-                <label htmlFor="bgColor">change background color:</label>
-                <input onChange={handleColorChange} type="color" name="bgColor" id="bgColor" />
-
-
-                <button>Save</button>
-            </form>
+                    <button>Save</button>
+                </form>
+            </section>
         </section>
     )
 }
