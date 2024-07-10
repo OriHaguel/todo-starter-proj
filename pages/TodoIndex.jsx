@@ -3,9 +3,13 @@ import { TodoList } from "../cmps/TodoList.jsx"
 import { DataTable } from "../cmps/data-table/DataTable.jsx"
 import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
-import { loadTodos, remove, save } from "../store/todo.action.js"
-import { SET_FILTER_BY, SET_USER_SCORE } from "../store/store.js"
-import { getUserActivities, updateBalance, updateUserActivities } from '../store/user.action.js'
+// import { loadTodos, remove, save } from "../store/todo.action.js"
+
+// import { getUserActivities, updateBalance, updateUserActivities } from '../store/user.action.js'
+
+import { SET_FILTER_BY } from "../store/reducers/todo.reducer.js"
+import { loadTodos, remove, save } from "../store/actions/todo.action.js"
+import { getUserActivities, updateBalance, updateUserActivities } from "../store/actions/user.action.js"
 
 const { useState, useEffect } = React
 const { Link, useSearchParams } = ReactRouterDOM
@@ -13,8 +17,8 @@ const { useSelector, useDispatch } = ReactRedux
 export function TodoIndex() {
 
     const dispatch = useDispatch()
-    const todos = useSelector(state => state.todos)
-    const user = useSelector(state => state.user)
+    const todos = useSelector(state => state.todoModule.todos)
+    const user = useSelector(state => state.userModule.user)
     const doneTodos = todos.filter(todo => todo.isDone)
 
     // console.log("🚀 ~ TodoIndex ~ user:", { ...user, activities: { ...user.activities, ...{ txt: 'yo', yo: 'yo' } } })
@@ -69,7 +73,6 @@ export function TodoIndex() {
 
     function onToggleTodo(todo) {
         if (user && !todo.isDone) {
-            // dispatch({ type: SET_USER_SCORE })
             updateBalance()
         }
         const todoToSave = { ...todo, isDone: !todo.isDone }

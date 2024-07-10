@@ -1,5 +1,8 @@
-import { userService } from "../services/user.service.js";
-import { SET_USER, store, SET_USER_SCORE } from "./store.js";
+import { userService } from "../../services/user.service.js";
+import { SET_USER, SET_USER_SCORE } from "../reducers/user.reducer.js";
+// import { userService } from "../services/user.service.js";
+import { store } from "../store.js";
+// import { SET_USER, store, SET_USER_SCORE } from "./store.js";
 
 export function login(credentials) {
     userService.login(credentials)

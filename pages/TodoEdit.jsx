@@ -1,7 +1,11 @@
 import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
-import { save } from "../store/todo.action.js"
-import { getUserActivities, updateBalance, updateUserActivities } from '../store/user.action.js'
+// import { save } from "../store/todo.action.js"
+
+// import { getUserActivities, updateBalance, updateUserActivities } from '../store/user.action.js'
+
+import { save } from "../store/actions/todo.action.js"
+import { getUserActivities, updateBalance, updateUserActivities } from "../store/actions/user.action.js"
 
 const { useState, useEffect } = React
 const { useNavigate, useParams } = ReactRouterDOM
@@ -11,7 +15,7 @@ export function TodoEdit() {
     const [todoToEdit, setTodoToEdit] = useState(todoService.getEmptyTodo())
     const navigate = useNavigate()
     const params = useParams()
-    const user = useSelector(state => state.user)
+    const user = useSelector(state => state.userModule.user)
     console.log("🚀 ~ TodoEdit ~ user:", user)
     useEffect(() => {
         if (params.todoId) loadTodo()
